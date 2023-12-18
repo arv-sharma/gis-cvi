@@ -17,3 +17,19 @@ This tutorial utilizes two major open-source tools for analysis: Python and QGIS
   - rioxarray for Python.
   - xarray for Python.
   - osmnx for Python.
+
+# Guide to the Python scripts
+The scripts in this repository include the code necessary to implement the methodology in Python along with some accessory code, and is meant to be used with QGIS (or other GIS utility) for some of the tasks. For the workflow in Python alone, here is the suggested sequence to run the scripts:
+  - vizS2CloudFree.py
+  - get_S2CloudFree_S1_toDrive.py
+  - s1_createTextureFeatures.py
+  - vizSpectralSignatures.py
+  - getFileName.py
+  - s1s2_classification_binary_multi.py
+  - getFloodMetrics.py
+  - reproject_datasets.py
+  - calcInundationMetric.py
+  - getMetricsFromOSM.py
+  - derived_metrics.py
+  - localCVI_FA.py
+  - globalCVI.py
