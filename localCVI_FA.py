@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+This script calculates the Community Vulnerability Index from geospatial datasets using Factor Analysis.
+
+"""
 
 import rioxarray as rxr
 import os
@@ -7,17 +12,9 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import sklearn.decomposition as skdecomp
 import matplotlib.pyplot as plt
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-    'font.size': 10
-#    "font.sans-serif": "Helvetica",
-})
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib_scalebar.scalebar import ScaleBar
 import earthpy.plot as ep
-# from joblib import Parallel, delayed, cpu_count
-# from tqdm import tqdm
 
 from factor_analyzer import FactorAnalyzer
 from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
@@ -25,17 +22,11 @@ from factor_analyzer.factor_analyzer import calculate_kmo
 
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-#%% Function to plot raster
-
+# Function to plot raster
 def plotRaster(raster, categorize=False, saveTiffFileName=None, saveRasterFileName=False, output2Memory=False):
     """
-    Plot a raster in EPSG:3857 (WGS 84/Pseudo-Mercator projection). If 'categorize' is True, then the function maps the values in the raster to the following values: 
-        values > 1 standard deviation from the mean are assigned 5, 
-        values between 0.5 and 1 times the standard deviation from the mean are assigned 4, 
-        values between -0.5 and 0.5 times the standard deviation from the mean are assigned 3, 
-        values between -1 and -0.5 times the standard deviation from the mean are assigned 2, and 
-        values less than -1 times the standard deviation from the mean are assigned 1. 
-        Optionally save the projected map as TIFF and save the reprojected raster.
+    Plot a raster in EPSG:3857 (WGS 84/Pseudo-Mercator projection). If 'categorize' is True, then the function maps the values in the raster to specific categories.
+    Optionally save the projected map as TIFF and save the reprojected raster.
 
     Parameters
     ----------
@@ -111,11 +102,9 @@ def plotRaster(raster, categorize=False, saveTiffFileName=None, saveRasterFileNa
     # Optionally, return plotted raster data
     if output2Memory:
         return(raster2Plot)
-    
-#%% Function to apply FA
 
+# Function to apply Factor Analysis (FA)
 def applyFA(df, fullTgtFolderPath, n_factors=None, rotation='varimax', method='ml', use_smc=True):    
-    
     # Calculate VIF to find multicollinearity
     vif_df = pd.DataFrame()
     vif_df.index.name = 'Feature ID'
@@ -198,10 +187,9 @@ def applyFA(df, fullTgtFolderPath, n_factors=None, rotation='varimax', method='m
     intermediateCI = np.matmul(scaledData, FA_weights_df.to_numpy()) # Intermediate composite index
     CVI_raw = np.matmul(intermediateCI, FA_explVarRatio)
     print('Eigenvalues: {}'.format(FA.get_eigenvalues()[0]))
-    return(CVI_raw, FA_loadings_df, FA_weights_df)    
-    
-#%% Function to calculate CVI for each city
+    return(CVI_raw, FA_loadings_df, FA_weights_df)
 
+# Function to calculate Composite Vulnerability Index (CVI) for each city
 def calcCVI(rootFolder, targetFolder, folder, cleanVariables=False):
     tifFiles = glob.glob(os.path.join(rootFolder, folder, 'derived', '*.tif'))
     # Remove GDP increase raster since its data is limited
@@ -271,8 +259,7 @@ def calcCVI(rootFolder, targetFolder, folder, cleanVariables=False):
     print('\nCompleted processing data for ' + folder)
     plt.close('all')
 
-#%% Main
-
+# Main function
 if __name__ == '__main__':
     rootFolder = input('Enter the root folder address:')
     targetFolder = input('Enter the target folder address: ')
